@@ -27,6 +27,23 @@ scene("lose", () => {
 	])
 })
 
+scene("menu", () => {	
+	add([
+		rect(1000, 100),
+		color(0,0,0,1),
+		pos(center()),
+		origin("center")
+	])
+	add([
+		text("Click me to play!"),
+		pos(center()),
+		origin("center"),
+		keyPress("space", () => go("game")),
+		mouseClick(() => go("game")),
+		color(255,255,255)
+	])
+
+})
 
 const LEVELS = [
 	[
@@ -51,6 +68,18 @@ const LEVELS = [
 scene("won", () => {
 	add([
 		text("You Won"),
+		pos(center()),
+		origin("center"),
+	])
+
+	keyPress("space", () => go("game")),
+		mouseClick(() => go("game"))
+})
+
+
+scene("secret", () => {
+	add([
+		text("hehe, ur a ultimate chad for getting all 6 coins :>"),
 		pos(center()),
 		origin("center"),
 	])
@@ -148,6 +177,8 @@ scene("game", ({
 				levelId: levelId + 1,
 				coins: coins,
 			});
+		} else if(coins === '6') {
+			go("secret")
 		} else {
 			go("won");
 		}
@@ -211,4 +242,4 @@ scene("game", ({
 
 })
 
-go('game')
+go('menu')

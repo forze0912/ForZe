@@ -4002,9 +4002,25 @@ scene("lose", function () {
     return go("game");
   })]);
 });
+scene("menu", function () {
+  add([rect(1000, 100), color(0, 0, 0, 1), pos(center()), origin("center")]);
+  add([text("Click me to play!"), pos(center()), origin("center"), keyPress("space", function () {
+    return go("game");
+  }), mouseClick(function () {
+    return go("game");
+  }), color(255, 255, 255)]);
+});
 var LEVELS = [["=             $              ", "=             =              ", "=                            ", "=             =              ", "=    ^        =    <         ", "=============================@"], ["=                            ", "=                            ", "=                            ", "=                            ", "=      <  ^  <   ^  <  ^  <  ", "=============================@"]];
 scene("won", function () {
   add([text("You Won"), pos(center()), origin("center")]);
+  keyPress("space", function () {
+    return go("game");
+  }), mouseClick(function () {
+    return go("game");
+  });
+});
+scene("secret", function () {
+  add([text("hehe, ur a ultimate chad for getting all 6 coins :>"), pos(center()), origin("center")]);
   keyPress("space", function () {
     return go("game");
   }), mouseClick(function () {
@@ -4059,6 +4075,8 @@ scene("game", function () {
         levelId: levelId + 1,
         coins: coins
       });
+    } else if (coins === '6') {
+      go("secret");
     } else {
       go("won");
     }
@@ -4111,7 +4129,7 @@ scene("game", function () {
     }
   });
 });
-go('game');
+go('menu');
 },{"kaboom":"node_modules/kaboom/dist/kaboom.mjs","./patrol":"patrol.js"}],"../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -4140,7 +4158,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57763" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58206" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
