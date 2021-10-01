@@ -10,7 +10,6 @@ kaboom({
 	debugger: false
 });
 
-
 loadSprite("portal", "portal.a830cee5.png");
 loadSprite("bean", "bean.2ecb9859.png")
 loadSprite("ghost", "googoly.82de79a6.png")
