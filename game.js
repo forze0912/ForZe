@@ -1,244 +1,170 @@
-import kaboom from "kaboom";
-import patrol from './patrol'
-const JUMP_FORCE = 1000;
-const SPEED = 900;
-const FALL_DEATH = 2400;
-const FLOOR_HEIGHT = 48;
-
+import kaboom from 'kaboom';
+import patrol from "./patrol.js";
 kaboom({
-	fullscreen: true,
-	debugger: false
-});
-
-loadSprite("portal", "portal.a830cee5.png");
-loadSprite("bean", "bean.2ecb9859.png")
-loadSprite("ghost", "googoly.82de79a6.png")
-loadSprite("spike", "spike.ab04267c.png")
-loadSprite("grass", "grass.276f4b80.png")
-loadSprite("coin" , "coin.9d799bbd.png")
-scene("lose", () => {
-	add([
-		text("Game Over"),
-		pos(center()),
-		origin("center"),
-		keyPress("space", () => go("game")),
-		mouseClick(() => go("game"))
-	])
+	fullscreen : true
 })
 
-scene("menu", () => {	
+loadSprite("bean", "bean.2ecb9859.png")
+loadSprite("grass", "grass.276f4b80.png")
+loadSprite("chest", "chest.93e35047.png")
+loadSprite("ghost", "ghost.5367f5e7.png")
+
+
+scene("win", () => {
 	add([
-		rect(1000, 100),
-		color(0,0,0,1),
+		text("You Won!\rPress me to play!"),
 		pos(center()),
 		origin("center")
 	])
-	add([
-		text("Click me to play!"),
-		pos(center()),
-		origin("center"),
-		keyPress("space", () => go("game")),
-		mouseClick(() => go("game")),
-		color(255,255,255)
-	])
 
+	mouseDown(() => {
+		go("game")
+	})
 })
 
-const LEVELS = [
+scene("lose", () => {
+	add([
+		text("You Lose\rPress me to play!"),
+		pos(center()),
+		origin("center")
+	])
+
+	mouseDown(() => {
+		go("game")
+	})
+})
+
+const levels = [
 	[
-		"=             $              ",
-		"=             =              ",
-		"=                            ",
-		"=             =              ",
-		"=    ^        =    <         ",
-		"=============================@",
+		"=============================",
+		"=               *           =",
+		"=         =                 =",
+		"===========          *      =",
+		"=                 *         =",
+		"=             *     *       =",
+		"=     =========             =",
+		"=             =   *         =",
+		"=             =             =",
+		"=             =      *      =",
+		"=             =             =",
+		"=             =  *          =",
+		"=             =      *      =",
+		"=             =         *   =",
+		"=             ===== =========",
+		"=    *   *      *  #  *     =",
+		"=                           =",
+		"=============================",
 	],
 	[
-		"=                            ",
-		"=                            ",
-		"=                            ",
-		"=                            ",
-		"=      <  ^  <   ^  <  ^  <  ",
-		"=============================@",
-	],
-
-];
-
-scene("won", () => {
-	add([
-		text("You Won"),
-		pos(center()),
-		origin("center"),
-	])
-
-	keyPress("space", () => go("game")),
-		mouseClick(() => go("game"))
-})
-
-
-scene("secret", () => {
-	add([
-		text("hehe, ur a ultimate chad for getting all 6 coins :>"),
-		pos(center()),
-		origin("center"),
-	])
-
-	keyPress("space", () => go("game")),
-		mouseClick(() => go("game"))
-})
-
+		"=============================",
+		"=                           =",
+		"=                           =",
+		"=*                          =",
+		"=             *             =",
+		"=*                          =",
+		"=             *             =",
+		"=*                          =",
+		"=             *             =",
+		"=*                          =",
+		"=             *             =",
+		"=*                          =",
+		"=             =====         =",
+		"=*                =         =",
+		"=                 =         =",
+		"=*          =  #  =         =",
+		"=           =     =         =",
+		"=============================",
+	]
+	
+]
 const levelConf = {
+	// grid size
 	width: 64,
 	height: 64,
+
 	"=": () => [
-		sprite("grass"),
-		solid(),
-		area(),
+	  rect(64, 64),
+	  area(),
+	  solid(),
+	  color(0,0,0,1),
+	  origin("bot"),
 	],
-
 	"*": () => [
-		rect(32, 32),
-		solid(),
-		area(),
-		patrol(),
-		color(0, 0, 0, 1),
-		"enemy"
+	  sprite("ghost"),
+	  area(),
+	  solid(),
+	  scale(0.5),
+	  patrol(),
+	  "enemy",
 	],
-	"@": () => [
-		sprite("portal"),
-		area({
-			scale: 0.5,
-		}),
-		origin("bot"),
-		pos(0, -12),
-		solid(),
-		"portal",
+
+	"#": () => [
+	  sprite("chest"),
+	  area(),
+	  solid(),
+	  scale(0.4),
+	  "chest",
 	],
-	"^": () => [
-		sprite("spike"),
-		solid(),
-		area(),
-		scale(2),
-		"danger"
-	],
-	"<": () => [
-		sprite("ghost"),
-		solid(),
-		area(),
-		patrol(),
-		"enemy"
-	],
-	"$": () => [
-		sprite("coin"),
-		area(),
-		"coin"
-	]
+  };
 
-}
+scene("game", ({ levelId } = { levelId: 0 }) => {
 
+	const level = addLevel(levels[levelId ?? 0], levelConf);
 
+	var health = 30
 
-scene("game", ({
-	levelId,
-	coins
-} = {
-	levelId: 0,
-	coins: 0
-}) => {
-
-	const level = addLevel(LEVELS[levelId ?? 0], levelConf);
-
-	const player = add([
-		sprite("bean"),
-		pos(80, 104),
-		solid(),
-		body(),
-		area(),
-	]);
-
-	var coinLabel = add([
-		text(`${coins} coins`),
-		pos(24, 24),
+	const helathlabel = add([
+		text(health),
+		pos(20, 40),
 		fixed(),
 	])
 
-	player.collides("coin", (c) => {
-		if(c.is("coin")) {
-			destroy(c)
-			coins = coins + 1
-			coinLabel.text = `${coins} coins`
+	const player = add([
+		sprite("bean"),
+		pos(32, 0),
+		area(),
+		solid(),
+	])
+
+	player.action(() => {
+		camPos(player.pos)
+	})
+
+	player.collides("enemy", () => {
+		health = health - 1
+		helathlabel.text = health
+		if(health === 0) {
+			go("lose")
 		}
 	})
 
-	player.collides("portal", () => {
-		if (levelId + 1 < LEVELS.length) {
+	player.collides("chest", () => {
+		if(levelId + 1 < levels.length) {
 			go("game", {
-				levelId: levelId + 1,
-				coins: coins,
-			});
-		} else if(coins === '6') {
-			go("secret")
+				levelId: levelId + 1
+			})
 		} else {
-			go("won");
-		}
-	});
-
-	player.collides("danger", () => {
-		go("lose")
-	})
-
-	player.collides("enemy", (l) => {
-		if (player.grounded()) {
-			go('lose')
-		} else {
-			if (l.is("enemy")) {
-				destroy(l)
-				player.jump(JUMP_FORCE)
-			}
+			go("win")
 		}
 	})
 
-	player.on("ground", (l) => {
-		if (l.is("enemy")) {
-			player.jump(JUMP_FORCE * 1.5)
-			destroy(l)
-			coins = coins + 1
-			coinLabel.text = `${coins} coins`
-		}
+	var speed = 1000
+
+	keyDown("w" || "up", () => {
+		player.move(dir(90).scale(-speed))
 	})
 
-	player.action(() => {
-		camPos(player.pos);
-	});
-
-	player.action(() => {
-		// center camera to player
-		camPos(player.pos);
-		// check fall death
-		if (player.pos.y >= FALL_DEATH) {
-			go("lose");
-		}
-	});
-
-	const speed = 600
-	keyDown("left", () => {
-		player.move(-speed, 0)
-	})
-
-	keyDown("right", () => {
-		player.move(speed, 0)
-	})
-
-	keyDown("down", () => {
+	keyDown("s" || "down", () => {
 		player.move(dir(90).scale(speed))
 	})
 
-	keyPress("space", () => {
-		if (player.grounded()) {
-			player.jump();
-		}
-	});
+	keyDown("a" || "up", () => {
+		player.move(-speed, 0)
+	})
 
+	keyDown("d" || "down", () => {
+		player.move(speed, 0)
+	})
 })
 
-go('menu')
+go("game")

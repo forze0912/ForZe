@@ -1,5 +1,5 @@
 // custom component controlling enemy patrol movement
-export default function patrol(speed = 60, dir = 1) {
+export default function patrol(speed = 100 * 4, dir = 1) {
 	return {
 		id: "patrol",
 		require: [ "pos", "area", ],

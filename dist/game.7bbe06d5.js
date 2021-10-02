@@ -3955,7 +3955,7 @@ exports.default = patrol;
 
 // custom component controlling enemy patrol movement
 function patrol() {
-  var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 60;
+  var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100 * 4;
   var dir = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
   return {
     id: "patrol",
@@ -3977,160 +3977,90 @@ function patrol() {
 
 var _kaboom = _interopRequireDefault(require("kaboom"));
 
-var _patrol = _interopRequireDefault(require("./patrol"));
+var _patrol = _interopRequireDefault(require("./patrol.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var JUMP_FORCE = 1000;
-var SPEED = 900;
-var FALL_DEATH = 2400;
-var FLOOR_HEIGHT = 48;
 (0, _kaboom.default)({
-  fullscreen: true,
-  debugger: false
+  fullscreen: true
 });
-loadSprite("portal", "portal.a830cee5.png");
 loadSprite("bean", "bean.2ecb9859.png");
-loadSprite("ghost", "googoly.82de79a6.png");
-loadSprite("spike", "spike.ab04267c.png");
 loadSprite("grass", "grass.276f4b80.png");
-loadSprite("coin", "coin.9d799bbd.png");
+loadSprite("chest", "chest.93e35047.png");
+loadSprite("ghost", "ghost.5367f5e7.png");
+scene("win", function () {
+  add([text("You Won!\rPress me to play!"), pos(center()), origin("center")]);
+  mouseDown(function () {
+    go("game");
+  });
+});
 scene("lose", function () {
-  add([text("Game Over"), pos(center()), origin("center"), keyPress("space", function () {
-    return go("game");
-  }), mouseClick(function () {
-    return go("game");
-  })]);
-});
-scene("menu", function () {
-  add([rect(1000, 100), color(0, 0, 0, 1), pos(center()), origin("center")]);
-  add([text("Click me to play!"), pos(center()), origin("center"), keyPress("space", function () {
-    return go("game");
-  }), mouseClick(function () {
-    return go("game");
-  }), color(255, 255, 255)]);
-});
-var LEVELS = [["=             $              ", "=             =              ", "=                            ", "=             =              ", "=    ^        =    <         ", "=============================@"], ["=                            ", "=                            ", "=                            ", "=                            ", "=      <  ^  <   ^  <  ^  <  ", "=============================@"]];
-scene("won", function () {
-  add([text("You Won"), pos(center()), origin("center")]);
-  keyPress("space", function () {
-    return go("game");
-  }), mouseClick(function () {
-    return go("game");
+  add([text("You Lose\rPress me to play!"), pos(center()), origin("center")]);
+  mouseDown(function () {
+    go("game");
   });
 });
-scene("secret", function () {
-  add([text("hehe, ur a ultimate chad for getting all 6 coins :>"), pos(center()), origin("center")]);
-  keyPress("space", function () {
-    return go("game");
-  }), mouseClick(function () {
-    return go("game");
-  });
-});
+var levels = [["=============================", "=               *           =", "=         =                 =", "===========          *      =", "=                 *         =", "=             *     *       =", "=     =========             =", "=             =   *         =", "=             =             =", "=             =      *      =", "=             =             =", "=             =  *          =", "=             =      *      =", "=             =         *   =", "=             ===== =========", "=    *   *      *  #  *     =", "=                           =", "============================="], ["=============================", "=                           =", "=                           =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             =====         =", "=*                =         =", "=                 =         =", "=*          =  #  =         =", "=           =     =         =", "============================="]];
 var levelConf = {
+  // grid size
   width: 64,
   height: 64,
   "=": function _() {
-    return [sprite("grass"), solid(), area()];
+    return [rect(64, 64), area(), solid(), color(0, 0, 0, 1), origin("bot")];
   },
   "*": function _() {
-    return [rect(32, 32), solid(), area(), (0, _patrol.default)(), color(0, 0, 0, 1), "enemy"];
+    return [sprite("ghost"), area(), solid(), scale(0.5), (0, _patrol.default)(), "enemy"];
   },
-  "@": function _() {
-    return [sprite("portal"), area({
-      scale: 0.5
-    }), origin("bot"), pos(0, -12), solid(), "portal"];
-  },
-  "^": function _() {
-    return [sprite("spike"), solid(), area(), scale(2), "danger"];
-  },
-  "<": function _() {
-    return [sprite("ghost"), solid(), area(), (0, _patrol.default)(), "enemy"];
-  },
-  "$": function $() {
-    return [sprite("coin"), area(), "coin"];
+  "#": function _() {
+    return [sprite("chest"), area(), solid(), scale(0.4), "chest"];
   }
 };
 scene("game", function () {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-    levelId: 0,
-    coins: 0
+    levelId: 0
   },
-      levelId = _ref.levelId,
-      coins = _ref.coins;
+      levelId = _ref.levelId;
 
-  var level = addLevel(LEVELS[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
-  var player = add([sprite("bean"), pos(80, 104), solid(), body(), area()]);
-  var coinLabel = add([text("".concat(coins, " coins")), pos(24, 24), fixed()]);
-  player.collides("coin", function (c) {
-    if (c.is("coin")) {
-      destroy(c);
-      coins = coins + 1;
-      coinLabel.text = "".concat(coins, " coins");
-    }
-  });
-  player.collides("portal", function () {
-    if (levelId + 1 < LEVELS.length) {
-      go("game", {
-        levelId: levelId + 1,
-        coins: coins
-      });
-    } else if (coins === '6') {
-      go("secret");
-    } else {
-      go("won");
-    }
-  });
-  player.collides("danger", function () {
-    go("lose");
-  });
-  player.collides("enemy", function (l) {
-    if (player.grounded()) {
-      go('lose');
-    } else {
-      if (l.is("enemy")) {
-        destroy(l);
-        player.jump(JUMP_FORCE);
-      }
-    }
-  });
-  player.on("ground", function (l) {
-    if (l.is("enemy")) {
-      player.jump(JUMP_FORCE * 1.5);
-      destroy(l);
-      coins = coins + 1;
-      coinLabel.text = "".concat(coins, " coins");
-    }
-  });
+  var level = addLevel(levels[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
+  var health = 30;
+  var helathlabel = add([text(health), pos(20, 40), fixed()]);
+  var player = add([sprite("bean"), pos(32, 0), area(), solid()]);
   player.action(function () {
     camPos(player.pos);
   });
-  player.action(function () {
-    // center camera to player
-    camPos(player.pos); // check fall death
+  player.collides("enemy", function () {
+    health = health - 1;
+    helathlabel.text = health;
 
-    if (player.pos.y >= FALL_DEATH) {
+    if (health === 0) {
       go("lose");
     }
   });
-  var speed = 600;
-  keyDown("left", function () {
-    player.move(-speed, 0);
-  });
-  keyDown("right", function () {
-    player.move(speed, 0);
-  });
-  keyDown("down", function () {
-    player.move(dir(90).scale(speed));
-  });
-  keyPress("space", function () {
-    if (player.grounded()) {
-      player.jump();
+  player.collides("chest", function () {
+    if (levelId + 1 < levels.length) {
+      go("game", {
+        levelId: levelId + 1
+      });
+    } else {
+      go("win");
     }
   });
+  var speed = 1000;
+  keyDown("w" || "up", function () {
+    player.move(dir(90).scale(-speed));
+  });
+  keyDown("s" || "down", function () {
+    player.move(dir(90).scale(speed));
+  });
+  keyDown("a" || "up", function () {
+    player.move(-speed, 0);
+  });
+  keyDown("d" || "down", function () {
+    player.move(speed, 0);
+  });
 });
-go('menu');
-},{"kaboom":"node_modules/kaboom/dist/kaboom.mjs","./patrol":"patrol.js"}],"../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+go("game");
+},{"kaboom":"node_modules/kaboom/dist/kaboom.mjs","./patrol.js":"patrol.js"}],"../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -4158,7 +4088,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58271" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49575" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
