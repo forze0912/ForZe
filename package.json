@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "game",
   "private": true,
+  "engines": {
+    "node": "16.0.0",
+     "npm": "7.21.0"
+    },
   "dependencies": {
     "concurrently": "^6.2.2",
     "esbuild": "^0.13.3",
