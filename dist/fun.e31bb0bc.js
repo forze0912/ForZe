@@ -3989,6 +3989,7 @@ loadSprite("grass", "grass.276f4b80.png");
 loadSprite("chest", "chest.93e35047.png");
 loadSprite("ghost", "ghost.5367f5e7.png");
 loadSprite("potion", "potion.8042a6e3.png");
+loadSprite("invisPot", "a nice potion.34402216.png");
 scene("settings", function () {
   add([text("Use wasd to move. Press me again! :>"), pos(center()), origin('center')]);
   keyDown(function () {
@@ -4037,9 +4038,8 @@ scene("lose", function () {
     go("game");
   });
 });
-var levels = [["=============================", "=       !       *           =", "=         =                 =", "===========     !    *      =", "=                 *         =", "=             *     *       =", "=     =========             =", "=             =   *         =", "=             =             =", "=      !      =      *      =", "=             =             =", "=             =  *          =", "=             =      *      =", "=             =         *   =", "=             ====  =========", "=    *   *      *  #  *     =", "=                           =", "============================="], ["=============================", "=          !                =", "=                           =", "=*                          =", "=    ====     *             =", "=*      =                !  =", "=  !!!  =     *             =", "=*      =                   =", "=========     *   ======    =", "=*                = *       =", "=             *   =         =", "=*                =  !!!  * =", "============      =         =", "=*         ===  === *       =", "=                 ===========", "=*          =  #  =    !    =", "=           =     =         =", "============================="], ["=============================", "=                   *  *    =", "=      !      =             =", "===============             =", "=             *          !  =", "=======================     =", "=                           =", "=     !                     =", "=         *    ==============", "=      =                *   =", "=      =      *             =", "=      =       =========    =", "========       =            =", "=   *          =            =", "=      =========            =", "=   !  =      #             =", "=   *  =                    =", "============================="]];
+var levels = [["=============================", "=       !      *            =", "=         ====              =", "===========     !    *      =", "=                 *         =", "=             *     *       =", "=     =========             =", "=             =   *     !   =", "=             =             =", "=      !      =      *      =", "=             =             =", "=       ==    =  *          =", "=========     =      *      =", "=             =         *   =", "=             ====   ========", "=    *   *      *  #  *     =", "=         !  !              =", "============================="], ["=============================", "=          !                =", "=                           =", "=*                          =", "=    ====     *             =", "=*      =                !  =", "=  !!!  =     *             =", "=*      =                   =", "=========     *   ======    =", "=*                = *       =", "=             *   =         =", "=*                =  !!!  * =", "============      =         =", "=*         ===  === *       =", "=                 ===========", "=*          =  #       !    =", "=           =               =", "============================="], ["=============================", "=                   *  *    =", "=      !      =             =", "===============             =", "=       @     *          !  =", "=======================     =", "=                           =", "=     !                     =", "=         *    ==============", "=   @  =             @  *   =", "=      =      *             =", "=      =       =========    =", "========       =            =", "=   *          =            =", "=      =========            =", "=   !  =      #             =", "=   *  =                    =", "============================="], ["=============================", "=     !     *               =", "=      *          @         =", "=====================       =", "=                        !  =", "=       @   *   !   *       =", "=                           =", "=              !            =", "=     !               =     =", "=         *           =======", "=     *          @      *   =", "=             *             =", "=     !        =========    =", "========  @    =            =", "=   *          =  *         =", "=      =========      *     =", "=   !  =      #  *          =", "=   *  =   * *     *   *    =", "============================="]];
 var levelConf = {
-  // grid size
   width: 64,
   height: 64,
   "=": function _() {
@@ -4053,6 +4053,9 @@ var levelConf = {
   },
   "!": function _() {
     return [sprite("potion"), area(), solid(), scale(0.1), "potion"];
+  },
+  "@": function _() {
+    return [sprite("invisPot"), area(), scale(0.2), solid(), "invis"];
   }
 };
 scene("game", function () {
@@ -4065,11 +4068,24 @@ scene("game", function () {
 
   addLevel(levels[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
   var helathlabel = add([text(health), pos(20, 40), fixed()]);
-  var player = add([sprite("bean"), pos(32, 0), area(), solid()]);
+  var player = add([sprite("bean"), pos(32, 0), area(), color(), solid()]);
   player.action(function () {
     camPos(player.pos);
   });
+  var checker = 1;
+  player.collides("invis", function (p) {
+    if (p.is("invis")) {
+      destroy(p);
+      checker = 2;
+      var hehe = add([text("You are now invisible and cant take damage"), pos(100, 800), scale(0.7), fixed()]);
+      setTimeout(function () {
+        checker = 1;
+        destroy(hehe);
+      }, 5000);
+    }
+  });
   player.collides("enemy", function () {
+    if (checker === 2) return;
     health = health - 1;
     shake();
     helathlabel.text = health;
@@ -4108,6 +4124,7 @@ scene("game", function () {
       helathlabel.text = health;
 
       if (health < 0) {
+        if (checker === 2) return;
         destroy(player);
         go("lose");
       }
@@ -4168,7 +4185,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65465" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64376" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

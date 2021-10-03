@@ -10,6 +10,7 @@ loadSprite("grass", "grass.276f4b80.png")
 loadSprite("chest", "chest.93e35047.png")
 loadSprite("ghost", "ghost.5367f5e7.png")
 loadSprite("potion", "potion.8042a6e3.png")
+loadSprite("invisPot", "a nice potion.34402216.png")
 
 scene("settings", () => {
 	add([
@@ -112,22 +113,22 @@ scene("lose", () => {
 const levels = [
 	[
 		"=============================",
-		"=       !       *           =",
-		"=         =                 =",
+		"=       !      *            =",
+		"=         ====              =",
 		"===========     !    *      =",
 		"=                 *         =",
 		"=             *     *       =",
 		"=     =========             =",
-		"=             =   *         =",
+		"=             =   *     !   =",
 		"=             =             =",
 		"=      !      =      *      =",
 		"=             =             =",
-		"=             =  *          =",
-		"=             =      *      =",
+		"=       ==    =  *          =",
+		"=========     =      *      =",
 		"=             =         *   =",
-		"=             ====  =========",
+		"=             ====   ========",
 		"=    *   *      *  #  *     =",
-		"=                           =",
+		"=         !  !              =",
 		"=============================",
 	],
 	[
@@ -146,8 +147,8 @@ const levels = [
 		"============      =         =",
 		"=*         ===  === *       =",
 		"=                 ===========",
-		"=*          =  #  =    !    =",
-		"=           =     =         =",
+		"=*          =  #       !    =",
+		"=           =               =",
 		"=============================",
 	], 
 
@@ -156,12 +157,12 @@ const levels = [
 		"=                   *  *    =",
 		"=      !      =             =",
 		"===============             =",
-		"=             *          !  =",
+		"=       @     *          !  =",
 		"=======================     =",
 		"=                           =",
 		"=     !                     =",
 		"=         *    ==============",
-		"=      =                *   =",
+		"=   @  =             @  *   =",
 		"=      =      *             =",
 		"=      =       =========    =",
 		"========       =            =",
@@ -170,11 +171,33 @@ const levels = [
 		"=   !  =      #             =",
 		"=   *  =                    =",
 		"=============================",
+	],
+
+	[
+		"=============================",
+		"=     !     *               =",
+		"=      *          @         =",
+		"=====================       =",
+		"=                        !  =",
+		"=       @   *   !   *       =",                      
+		"=                           =",
+		"=              !            =",
+		"=     !               =     =",
+		"=         *           =======",
+		"=     *          @      *   =",
+		"=             *             =",
+		"=     !        =========    =",
+		"========  @    =            =",
+		"=   *          =  *         =",
+		"=      =========      *     =",
+		"=   !  =      #  *          =",
+		"=   *  =   * *     *   *    =",
+		"=============================",
 	]
 	
 ]
 const levelConf = {
-	// grid size
+
 	width: 64,
 	height: 64,
 
@@ -208,6 +231,13 @@ const levelConf = {
 		solid(),
 		scale(0.1),
 		"potion"
+	],
+	"@": () => [
+		sprite("invisPot"),
+		area(),
+		scale(0.2),
+		solid(),
+		"invis"
 	]
   };
 
@@ -225,6 +255,7 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 		sprite("bean"),
 		pos(32, 0),
 		area(),
+		color(),
 		solid(),
 	])
 
@@ -232,7 +263,26 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 		camPos(player.pos)
 	})
 
+	var checker = 1
+	player.collides("invis", (p) => {
+		if(p.is("invis")) {
+			destroy(p)
+			checker = 2
+			const hehe = add([
+				text("You are now invisible and cant take damage"),
+				pos(100, 800),
+				scale(0.7),
+				fixed()
+			])
+			setTimeout(() => {
+				checker = 1
+				destroy(hehe)
+			}, 5000)
+		}
+	})
+
 	player.collides("enemy", () => {
+		if(checker === 2) return;
 		health = health - 1
 		shake()
 		helathlabel.text = health
@@ -287,6 +337,7 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 		potionss.text = explosion
 		helathlabel.text = health
 		if(health < 0) {
+			if(checker === 2) return;
 			destroy(player)
 			go("lose")
 		}
