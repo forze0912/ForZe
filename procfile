@@ -1,1 +1,1 @@
-npx parcel index.html -p 8000
+worker npx parcel index.html -p 8000
