@@ -211,10 +211,11 @@ const levelConf = {
 	]
   };
 
-scene("game", ({ levelId, health, explosion } = { levelId: 0, health: 30, explosions: 0 }) => {
+scene("game", ({ levelId } = { levelId: 0 }) => {
 
 	addLevel(levels[levelId ?? 0], levelConf);
 
+	var health = 30
 
 	const helathlabel = add([
 		text(health),
@@ -240,6 +241,8 @@ scene("game", ({ levelId, health, explosion } = { levelId: 0, health: 30, explos
 			go("lose")
 		}
 	})
+
+	var explosion = 0
 
 	var potionss = add([
 		text(explosion),
