@@ -3972,12 +3972,12 @@ function patrol() {
     }
   };
 }
-},{}],"game.js":[function(require,module,exports) {
+},{}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _kaboom = _interopRequireDefault(require("kaboom"));
 
-var _patrol = _interopRequireDefault(require("./patrol.js"));
+var _patrol = _interopRequireDefault(require("./patrol"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3988,19 +3988,56 @@ loadSprite("bean", "bean.2ecb9859.png");
 loadSprite("grass", "grass.276f4b80.png");
 loadSprite("chest", "chest.93e35047.png");
 loadSprite("ghost", "ghost.5367f5e7.png");
+loadSprite("potion", "potion.8042a6e3.png");
+scene("settings", function () {
+  add([text("Use wasd to move. Press me again! :>"), pos(center()), origin('center')]);
+  keyDown(function () {
+    go('settings2');
+  });
+  mouseClick(function () {
+    go('settings2');
+  });
+});
+scene("settings2", function () {
+  add([text("Hover over potions and press space to use them. Press me again! :>"), scale(0.5), pos(center()), origin('center')]);
+  keyDown(function () {
+    go('game');
+  });
+  mouseClick(function () {
+    go("game");
+  });
+});
 scene("win", function () {
+  add([rect(8000, 80), color(0, 0, 0, 1), pos(center()), origin("center")]);
   add([text("You Won!\rPress me to play!"), pos(center()), origin("center")]);
+  keyDown(function () {
+    go('game');
+  });
   mouseDown(function () {
     go("game");
+  });
+});
+scene("menu", function () {
+  add([rect(8000, 80), color(0, 0, 0, 1), pos(center()), origin("center")]);
+  add([text('Press me to play!'), pos(center()), origin("center")]);
+  mouseDown(function () {
+    go("settings");
+  });
+  keyDown(function () {
+    go('settings');
   });
 });
 scene("lose", function () {
+  add([rect(10000, 80), color(0, 0, 0, 1), pos(center()), origin("center")]);
   add([text("You Lose\rPress me to play!"), pos(center()), origin("center")]);
+  keyDown(function () {
+    go('game');
+  });
   mouseDown(function () {
     go("game");
   });
 });
-var levels = [["=============================", "=               *           =", "=         =                 =", "===========          *      =", "=                 *         =", "=             *     *       =", "=     =========             =", "=             =   *         =", "=             =             =", "=             =      *      =", "=             =             =", "=             =  *          =", "=             =      *      =", "=             =         *   =", "=             ===== =========", "=    *   *      *  #  *     =", "=                           =", "============================="], ["=============================", "=                           =", "=                           =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             =====         =", "=*                =         =", "=                 =         =", "=*          =  #  =         =", "=           =     =         =", "============================="]];
+var levels = [["=============================", "=       !       *           =", "=         =                 =", "===========     !    *      =", "=                 *         =", "=             *     *       =", "=     =========             =", "=             =   *         =", "=             =             =", "=      !      =      *      =", "=             =             =", "=             =  *          =", "=             =      *      =", "=             =         *   =", "=             ====  =========", "=    *   *      *  #  *     =", "=                           =", "============================="], ["=============================", "=          !                =", "=                           =", "=*                          =", "=             *             =", "=*                       !  =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             *             =", "=*                          =", "=             =====         =", "=*                =         =", "=                 =         =", "=*          =  #  =    !    =", "=           =     =         =", "============================="], ["=============================", "=                   *  *    =", "=      !      =             =", "===============             =", "=             *          !  =", "=======================     =", "=                           =", "=     !                     =", "=         *    ==============", "=      =                    =", "=      =      *             =", "=      =                    =", "========                    =", "=                           =", "=                           =", "=             #             =", "=                           =", "============================="]];
 var levelConf = {
   // grid size
   width: 64,
@@ -4013,6 +4050,9 @@ var levelConf = {
   },
   "#": function _() {
     return [sprite("chest"), area(), solid(), scale(0.4), "chest"];
+  },
+  "!": function _() {
+    return [sprite("potion"), area(), solid(), scale(0.1), "potion"];
   }
 };
 scene("game", function () {
@@ -4021,7 +4061,7 @@ scene("game", function () {
   },
       levelId = _ref.levelId;
 
-  var level = addLevel(levels[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
+  addLevel(levels[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
   var health = 30;
   var helathlabel = add([text(health), pos(20, 40), fixed()]);
   var player = add([sprite("bean"), pos(32, 0), area(), solid()]);
@@ -4032,8 +4072,45 @@ scene("game", function () {
     health = health - 1;
     helathlabel.text = health;
 
-    if (health === 0) {
+    if (health < 0) {
       go("lose");
+    }
+  });
+  var explosion = 0;
+  var potionss = add([text(explosion), fixed(), pos(1000, 40)]);
+  player.collides("potion", function (p) {
+    if (p.is("potion")) {
+      destroy(p);
+      explosion = explosion + 1;
+      potionss.text = explosion;
+    }
+  });
+  keyPress("space", function () {
+    if (explosion > 0) {
+      var explosions = add([rect(400, 400), area(), pos(player.pos), origin("center"), color(255, 255, 255)]);
+      explosions.collides("enemy", function (w) {
+        if (w.is("enemy")) {
+          destroy(w);
+          health = health + 0.5;
+          helathlabel.text = health;
+          shake();
+        }
+      });
+      setTimeout(function () {
+        destroy(explosions);
+      }, 1000);
+      shake();
+      explosion = explosion - 1;
+      health = health - 3;
+      potionss.text = explosion;
+      helathlabel.text = health;
+
+      if (health < 0) {
+        destroy(player);
+        go("lose");
+      }
+
+      console.log(explosion);
     }
   });
   player.collides("chest", function () {
@@ -4059,8 +4136,8 @@ scene("game", function () {
     player.move(speed, 0);
   });
 });
-go("game");
-},{"kaboom":"node_modules/kaboom/dist/kaboom.mjs","./patrol.js":"patrol.js"}],"../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+go("menu");
+},{"kaboom":"node_modules/kaboom/dist/kaboom.mjs","./patrol":"patrol.js"}],"../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -4088,7 +4165,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49575" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65078" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -4264,5 +4341,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","game.js"], null)
-//# sourceMappingURL=/game.7bbe06d5.js.map
+},{}]},{},["../../.nvm/versions/node/v16.8.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
+//# sourceMappingURL=/fun.e31bb0bc.js.map

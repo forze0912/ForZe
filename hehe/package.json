@@ -1,0 +1,33 @@
+{
+    "name": "game",
+    "version": "1.0.0",
+    "description": "game",
+    "private": true,
+    "dependencies": {
+      "concurrently": "^6.2.2",
+      "esbuild": "^0.13.3",
+      "kaboom": "^2000.0.0-beta.23",
+      "react": "^17.0.2",
+      "react-dom": "^17.0.2",
+      "react-scripts": "^4.0.3",
+      "serve": "^12.0.1",
+      "static-here": "^1.0.0",
+      "web-vitals": "^1.1.2"
+    },
+    "scripts": {
+      "start": "parcel index.html -p 8000",
+      "dev": "concurrently \"npm run start\" \"cd hehe && npm run start\""
+    },
+    "author": "forze",
+    "license": "ISC",
+    "keywords": [
+      "game"
+    ],
+    "alias": {
+      "kaboom": "./node_modules/kaboom/dist/kaboom.mjs"
+    },
+    "devDependencies": {
+      "webpack-cli": "^4.8.0"
+    }
+  }
+  
