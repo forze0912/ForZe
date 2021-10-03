@@ -4057,12 +4057,15 @@ var levelConf = {
 };
 scene("game", function () {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-    levelId: 0
+    levelId: 0,
+    health: 30,
+    explosions: 0
   },
-      levelId = _ref.levelId;
+      levelId = _ref.levelId,
+      health = _ref.health,
+      explosion = _ref.explosion;
 
   addLevel(levels[levelId !== null && levelId !== void 0 ? levelId : 0], levelConf);
-  var health = 30;
   var helathlabel = add([text(health), pos(20, 40), fixed()]);
   var player = add([sprite("bean"), pos(32, 0), area(), solid()]);
   player.action(function () {
@@ -4076,7 +4079,6 @@ scene("game", function () {
       go("lose");
     }
   });
-  var explosion = 0;
   var potionss = add([text(explosion), fixed(), pos(1000, 40)]);
   player.collides("potion", function (p) {
     if (p.is("potion")) {
@@ -4165,7 +4167,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65078" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65465" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
