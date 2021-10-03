@@ -135,17 +135,17 @@ const levels = [
 		"=          !                =",
 		"=                           =",
 		"=*                          =",
-		"=             *             =",
-		"=*                       !  =",
-		"=             *             =",
-		"=*                          =",
-		"=             *             =",
-		"=*                          =",
-		"=             *             =",
-		"=*                          =",
-		"=             =====         =",
-		"=*                =         =",
-		"=                 =         =",
+		"=    ====     *             =",
+		"=*      =                !  =",
+		"=  !!!  =     *             =",
+		"=*      =                   =",
+		"=========     *   ======    =",
+		"=*                = *       =",
+		"=             *   =         =",
+		"=*                =  !!!  * =",
+		"============      =         =",
+		"=*         ===  === *       =",
+		"=                 ===========",
 		"=*          =  #  =    !    =",
 		"=           =     =         =",
 		"=============================",
@@ -161,14 +161,14 @@ const levels = [
 		"=                           =",
 		"=     !                     =",
 		"=         *    ==============",
-		"=      =                    =",
+		"=      =                *   =",
 		"=      =      *             =",
-		"=      =                    =",
-		"========                    =",
-		"=                           =",
-		"=                           =",
-		"=             #             =",
-		"=                           =",
+		"=      =       =========    =",
+		"========       =            =",
+		"=   *          =            =",
+		"=      =========            =",
+		"=   !  =      #             =",
+		"=   *  =                    =",
 		"=============================",
 	]
 	
@@ -211,11 +211,9 @@ const levelConf = {
 	]
   };
 
-scene("game", ({ levelId } = { levelId: 0 }) => {
+scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 
 	addLevel(levels[levelId ?? 0], levelConf);
-
-	var health = 30
 
 	const helathlabel = add([
 		text(health),
@@ -236,6 +234,7 @@ scene("game", ({ levelId } = { levelId: 0 }) => {
 
 	player.collides("enemy", () => {
 		health = health - 1
+		shake()
 		helathlabel.text = health
 		if(health < 0) {
 			go("lose")
@@ -299,7 +298,8 @@ scene("game", ({ levelId } = { levelId: 0 }) => {
 	player.collides("chest", () => {
 		if(levelId + 1 < levels.length) {
 			go("game", {
-				levelId: levelId + 1
+				levelId: levelId + 1,
+				health: 30
 			})
 		} else {
 			go("win")
