@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "game",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "14.x",
      "npm": "7.21.0"
