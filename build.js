@@ -2165,12 +2165,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   kaboom_default({
     fullscreen: true
   });
-  loadSprite("bean", "bean.2ecb9859.png");
-  loadSprite("grass", "grass.276f4b80.png");
-  loadSprite("chest", "chest.93e35047.png");
-  loadSprite("ghost", "ghost.5367f5e7.png");
-  loadSprite("potion", "potion.8042a6e3.png");
-  loadSprite("invisPot", "a nice potion.34402216.png");
+  loadSprite("bean", "bean.png");
+  loadSprite("grass", "grass.png");
+  loadSprite("chest", "chest.png");
+  loadSprite("ghost", "ghost.png");
+  loadSprite("potion", "potion.png");
+  loadSprite("invisPot", "a nice potion.png");
   scene("settings", () => {
     add([
       text("Use wasd to move. Press me again! :>"),
