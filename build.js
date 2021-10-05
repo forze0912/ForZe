@@ -2165,13 +2165,12 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   kaboom_default({
     fullscreen: true
   });
-  loadRoot("http://192.168.1.9:5000/");
-  loadSprite("bean", "bean.png");
-  loadSprite("grass", "grass.png");
-  loadSprite("chest", "chest.png");
-  loadSprite("ghost", "ghost.png");
-  loadSprite("potion", "potion.png");
-  loadSprite("invisPot", "a nice potion.png");
+  loadSprite("bean", "https://cdn.discordapp.com/attachments/858504999096549429/894759969944125450/bean.png");
+  loadSprite("grass", "https://cdn.discordapp.com/attachments/858504999096549429/894759948901298226/grass.png");
+  loadSprite("chest", "https://cdn.discordapp.com/attachments/858504999096549429/894759944828645386/chest.png");
+  loadSprite("ghost", "https://cdn.discordapp.com/attachments/858504999096549429/894759943155105812/ghost.png");
+  loadSprite("potion", "https://cdn.discordapp.com/attachments/858504999096549429/894759941540306975/potion.png");
+  loadSprite("invisPot", "https://cdn.discordapp.com/attachments/858504999096549429/894759924721156146/a_nice_potion.png");
   scene("settings", () => {
     add([
       text("Use wasd to move. Press me again! :>"),
