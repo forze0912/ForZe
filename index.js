@@ -7,12 +7,12 @@ kaboom({
 })
 
 
-loadSprite("bean", "https://cdn.discordapp.com/attachments/858504999096549429/894759969944125450/bean.png")
-loadSprite("grass", "https://cdn.discordapp.com/attachments/858504999096549429/894759948901298226/grass.png")
-loadSprite("chest", "https://cdn.discordapp.com/attachments/858504999096549429/894759944828645386/chest.png")
-loadSprite("ghost", "https://cdn.discordapp.com/attachments/858504999096549429/894759943155105812/ghost.png")
-loadSprite("potion", "https://cdn.discordapp.com/attachments/858504999096549429/894759941540306975/potion.png")
-loadSprite("invisPot", "https://cdn.discordapp.com/attachments/858504999096549429/894759924721156146/a_nice_potion.png")
+loadSprite("bean", "bean.2ecb9859.png")
+loadSprite("grass", "grass.276f4b80.png")
+loadSprite("chest", "chest.93e35047.png")
+loadSprite("ghost", "ghost.5367f5e7.png")
+loadSprite("potion", "potion.8042a6e3.png")
+loadSprite("invisPot", "a nice potion.34402216.png")
 
 scene("settings", () => {
 	add([
