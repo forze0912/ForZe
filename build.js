@@ -2165,6 +2165,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   kaboom_default({
     fullscreen: true
   });
+  loadRoot("http://192.168.1.9:5000/");
   loadSprite("bean", "bean.png");
   loadSprite("grass", "grass.png");
   loadSprite("chest", "chest.png");

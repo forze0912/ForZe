@@ -7,6 +7,8 @@ kaboom({
 })
 
 
+loadRoot("http://192.168.1.9:5000/")
+
 loadSprite("bean", "bean.png")
 loadSprite("grass", "grass.png")
 loadSprite("chest", "chest.png")
