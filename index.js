@@ -2,7 +2,7 @@ import kaboom from 'kaboom';
 import patrol from "./patrol";
 
 kaboom({
-	fullscreen : true
+	fullscreen: true
 })
 
 loadSprite("bean", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/bean.png")
@@ -47,7 +47,7 @@ scene("settings2", () => {
 scene("win", () => {
 	add([
 		rect(8000, 80),
-		color(0,0,0,1),
+		color(0, 0, 0, 1),
 		pos(center()),
 		origin("center")
 	])
@@ -69,15 +69,15 @@ scene("win", () => {
 scene("menu", () => {
 	add([
 		rect(8000, 80),
-		color(0,0,0,1),
+		color(0, 0, 0, 1),
 		pos(center()),
 		origin("center")
-	])	
+	])
 	add([
 		text('Press me to play!'),
 		pos(center()),
 		origin("center")
-	])	
+	])
 	mouseDown(() => {
 		go("settings")
 	})
@@ -90,7 +90,7 @@ scene("menu", () => {
 scene("lose", () => {
 	add([
 		rect(10000, 80),
-		color(0,0,0,1),
+		color(0, 0, 0, 1),
 		pos(center()),
 		origin("center")
 	])
@@ -149,7 +149,7 @@ const levels = [
 		"=*          =  #       !    =",
 		"=           =               =",
 		"=============================",
-	], 
+	],
 
 	[
 		"=============================",
@@ -178,7 +178,7 @@ const levels = [
 		"=      *          @         =",
 		"=====================       =",
 		"=                        !  =",
-		"=       @   *   !   *       =",                      
+		"=       @   *   !   *       =",
 		"=                           =",
 		"=              !            =",
 		"=     !               =     =",
@@ -192,8 +192,29 @@ const levels = [
 		"=   !  =      #  *          =",
 		"=   *  =   * *     *   *    =",
 		"=============================",
+	],
+	[
+		"=============================",
+		"=     !     *         *     =",
+		"=      *          @         =",
+		"=====================       =",
+		"=                        !  =",
+		"=    !      *   !   *       =",
+		"=                           =",
+		"=    *         !            =",
+		"=                     =     =",
+		"=      *   @          =======",
+		"=                       *   =",
+		"=           *    ============",
+		"=     !                     =",
+		"===                   *     =",
+		"= ***  ===========          =",
+		"= ***  =                    =",
+		"= *#*  = ! *      *    *    =",
+		"= ***  = *      *    *      =",
+		"=============================",
 	]
-	
+
 ]
 const levelConf = {
 
@@ -201,27 +222,27 @@ const levelConf = {
 	height: 64,
 
 	"=": () => [
-	  rect(64, 64),
-	  area(),
-	  solid(),
-	  color(0,0,0,1),
-	  origin("bot"),
+		rect(64, 64),
+		area(),
+		solid(),
+		color(0, 0, 0, 1),
+		origin("bot"),
 	],
 	"*": () => [
-	  sprite("ghost"),
-	  area(),
-	  solid(),
-	  scale(0.5),
-	  patrol(),
-	  "enemy",
+		sprite("ghost"),
+		area(),
+		solid(),
+		scale(0.5),
+		patrol(),
+		"enemy",
 	],
 
 	"#": () => [
-	  sprite("chest"),
-	  area(),
-	  solid(),
-	  scale(0.4),
-	  "chest",
+		sprite("chest"),
+		area(),
+		solid(),
+		scale(0.4),
+		"chest",
 	],
 
 	"!": () => [
@@ -238,9 +259,15 @@ const levelConf = {
 		solid(),
 		"invis"
 	]
-  };
+};
 
-scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
+scene("game", ({
+	levelId,
+	health
+} = {
+	levelId: 0,
+	health: 30
+}) => {
 
 	addLevel(levels[levelId ?? 0], levelConf);
 
@@ -264,7 +291,7 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 
 	var checker = 1
 	player.collides("invis", (p) => {
-		if(p.is("invis")) {
+		if (p.is("invis")) {
 			destroy(p)
 			checker = 2
 			const hehe = add([
@@ -281,11 +308,11 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 	})
 
 	player.collides("enemy", () => {
-		if(checker === 2) return;
+		if (checker === 2) return;
 		health = health - 1
 		shake()
 		helathlabel.text = health
-		if(health < 0) {
+		if (health < 0) {
 			go("lose")
 		}
 	})
@@ -294,12 +321,12 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 
 	var potionss = add([
 		text(explosion),
-		fixed(),		
+		fixed(),
 		pos(1000, 40)
 	])
 
 	player.collides("potion", (p) => {
-		if(p.is("potion")) {
+		if (p.is("potion")) {
 			destroy(p)
 			explosion = explosion + 1
 			potionss.text = explosion
@@ -308,45 +335,45 @@ scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
 
 
 	keyPress("space", () => {
-		if(explosion > 0) {
-		const explosions = add([
-		rect(400, 400),
-		area(),
-		pos(player.pos),
-		origin("center"),
-		color(255, 255, 255),
+		if (explosion > 0) {
+			const explosions = add([
+				rect(400, 400),
+				area(),
+				pos(player.pos),
+				origin("center"),
+				color(255, 255, 255),
 
-	])
+			])
 
-	explosions.collides("enemy", (w) => {
-		if(w.is("enemy")) {
-			destroy(w)
-			health = health + 0.5
-			helathlabel.text = health
+			explosions.collides("enemy", (w) => {
+				if (w.is("enemy")) {
+					destroy(w)
+					health = health + 0.5
+					helathlabel.text = health
+					shake()
+				}
+			})
+
+			setTimeout(() => {
+				destroy(explosions)
+			}, 1000)
 			shake()
-		}
-	})
-
-	setTimeout(() => {
-		destroy(explosions)
-	}, 1000)
-		shake()
-		explosion = explosion - 1
-		health = health - 3
-		potionss.text = explosion
-		helathlabel.text = health
-		if(health < 0) {
-			if(checker === 2) return;
-			destroy(player)
-			go("lose")
-		}
-		console.log(explosion)
+			explosion = explosion - 1
+			health = health - 3
+			potionss.text = explosion
+			helathlabel.text = health
+			if (health < 0) {
+				if (checker === 2) return;
+				destroy(player)
+				go("lose")
+			}
+			console.log(explosion)
 		}
 
 	})
 
 	player.collides("chest", () => {
-		if(levelId + 1 < levels.length) {
+		if (levelId + 1 < levels.length) {
 			go("game", {
 				levelId: levelId + 1,
 				health: 30

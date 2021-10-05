@@ -2335,6 +2335,27 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "=   !  =      #  *          =",
       "=   *  =   * *     *   *    =",
       "============================="
+    ],
+    [
+      "=============================",
+      "=     !     *         *     =",
+      "=      *          @         =",
+      "=====================       =",
+      "=                        !  =",
+      "=    !      *   !   *       =",
+      "=                           =",
+      "=    *         !            =",
+      "=                     =     =",
+      "=      *   @          =======",
+      "=                       *   =",
+      "=           *    ============",
+      "=     !                     =",
+      "===                   *     =",
+      "= ***  ===========          =",
+      "= ***  =                    =",
+      "= *#*  = ! *      *    *    =",
+      "= ***  = *      *    *      =",
+      "============================="
     ]
   ];
   var levelConf = {
@@ -2377,7 +2398,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "invis"
     ]
   };
-  scene("game", ({ levelId, health } = { levelId: 0, health: 30 }) => {
+  scene("game", ({
+    levelId,
+    health
+  } = {
+    levelId: 0,
+    health: 30
+  }) => {
     addLevel(levels[levelId ?? 0], levelConf);
     const helathlabel = add([
       text(health),
