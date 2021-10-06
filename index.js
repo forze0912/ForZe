@@ -38,7 +38,7 @@ scene("settings2", () => {
 	keyDown(() => {
 		idek = idek + 1
 		if(idek === 1) {
-			instuctions.text = "Get to level 100!"
+			instuctions.text = "Get to level 10!"
 			instuctions.scale = 2
 		} else {
 			go("game")
@@ -47,7 +47,7 @@ scene("settings2", () => {
 	mouseClick(() => {
 		idek = idek + 1
 		if(idek === 1) {
-			instuctions.text = "Get to level 100!"
+			instuctions.text = "Get to level 10!"
 			instuctions.scale = 2
 		} else {
 			go("game")
@@ -402,7 +402,7 @@ scene("game", ({
 
 
 	player.collides("chest", () => {
-		if(thing === 2) {
+		if(thing === 10) {
 			go("win")
 		} else {
 			if (levelId + 1 < levels.length) {

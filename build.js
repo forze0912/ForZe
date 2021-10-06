@@ -2194,7 +2194,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     keyDown(() => {
       idek = idek + 1;
       if (idek === 1) {
-        instuctions.text = "Get to level 100!";
+        instuctions.text = "Get to level 10!";
         instuctions.scale = 2;
       } else {
         go("game");
@@ -2203,7 +2203,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     mouseClick(() => {
       idek = idek + 1;
       if (idek === 1) {
-        instuctions.text = "Get to level 100!";
+        instuctions.text = "Get to level 10!";
         instuctions.scale = 2;
       } else {
         go("game");
@@ -2520,7 +2520,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     });
     var levelsss = Math.floor(Math.random() * 2) + 1;
     player.collides("chest", () => {
-      if (thing === 100) {
+      if (thing === 10) {
         go("win");
       } else {
         if (levelId + 1 < levels.length) {
