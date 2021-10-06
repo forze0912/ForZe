@@ -402,7 +402,7 @@ scene("game", ({
 
 
 	player.collides("chest", () => {
-		if(thing === 100) {
+		if(thing === 2) {
 			go("win")
 		} else {
 			if (levelId + 1 < levels.length) {
