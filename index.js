@@ -27,7 +27,8 @@ scene("settings", () => {
 })
 
 scene("settings2", () => {
-	add([
+	var idek = 0
+	var instuctions = add([
 		text("Hover over potions and press space to use them. Press me again! :>"),
 		scale(0.5),
 		pos(center()),
@@ -35,10 +36,22 @@ scene("settings2", () => {
 	])
 
 	keyDown(() => {
-		go('game')
+		idek = idek + 1
+		if(idek === 1) {
+			instuctions.text = "Get to level 100!"
+			instuctions.scale = 2
+		} else {
+			go("game")
+		}
 	})
 	mouseClick(() => {
-		go("game")
+		idek = idek + 1
+		if(idek === 1) {
+			instuctions.text = "Get to level 100!"
+			instuctions.scale = 2
+		} else {
+			go("game")
+		}
 	})
 
 })
@@ -196,8 +209,8 @@ const levels = [
 	[
 		"=============================",
 		"=     !     *         *     =",
-		"=      *          @         =",
-		"=====================       =",
+		"=      *                    =",
+		"=                            =",
 		"=                        !  =",
 		"=    !      *   !   *       =",
 		"=                           =",
@@ -207,15 +220,16 @@ const levels = [
 		"=                       *   =",
 		"=           *    ============",
 		"=     !                     =",
-		"===                   *     =",
+		"======                *     =",
 		"= ***  ===========          =",
-		"= ***  =                    =",
-		"= *#*  = ! *      *    *    =",
-		"= ***  = *      *    *      =",
+		"= ***                       =",
+		"= *#*    ! *      *    *    =",
+		"=      = *      *    *      =",
 		"=============================",
 	]
 
 ]
+
 const levelConf = {
 
 	width: 64,
@@ -263,17 +277,29 @@ const levelConf = {
 
 scene("game", ({
 	levelId,
-	health
+	healths,
+	potionsss,
+	thing,
 } = {
 	levelId: 0,
-	health: 30
+	healths: 30,
+	potionsss: 0,
+	thing: 1
 }) => {
 
 	addLevel(levels[levelId ?? 0], levelConf);
 
+	var health = healths
+
 	const helathlabel = add([
 		text(health),
 		pos(20, 40),
+		fixed(),
+	])
+
+	const things = add([
+		text(`Level ${thing}`),
+		pos(1300, 40),
 		fixed(),
 	])
 
@@ -317,7 +343,7 @@ scene("game", ({
 		}
 	})
 
-	var explosion = 0
+	var explosion = potionsss
 
 	var potionss = add([
 		text(explosion),
@@ -372,16 +398,31 @@ scene("game", ({
 
 	})
 
+	var levelsss = Math.floor(Math.random() * 2) + 1
+
+
 	player.collides("chest", () => {
-		if (levelId + 1 < levels.length) {
+		if(thing === 100) {
+			go("win")
+		} else {
+			if (levelId + 1 < levels.length) {
 			go("game", {
 				levelId: levelId + 1,
-				health: 30
+				healths: 30,
+				potionsss: explosion,
+				thing: thing + 1
 			})
 		} else {
-			go("win")
+			go("game", {
+				levelId: levelsss,
+				healths: 30,
+				potionsss: explosion,
+				thing: thing + 1
+			})
 		}
-	})
+	}
+		
+})
 
 	var speed = 1000
 
