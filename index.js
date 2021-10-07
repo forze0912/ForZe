@@ -11,117 +11,6 @@ loadSprite("ghost", "https://raw.githubusercontent.com/forze0912/kaboom.github.i
 loadSprite("potion", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/potion.png")
 loadSprite("invisPot", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/a%20nice%20potion.png")
 
-scene("settings", () => {
-	add([
-		text("Use wasd to move. Press me again! :>"),
-		pos(center()),
-		origin('center')
-	])
-
-	keyDown(() => {
-		go('settings2')
-	})
-	mouseClick(() => {
-		go('settings2')
-	})
-})
-
-scene("settings2", () => {
-	var idek = 0
-	var instuctions = add([
-		text("Hover over potions and press space to use them. Press me again! :>"),
-		scale(0.5),
-		pos(center()),
-		origin('center')
-	])
-
-	keyDown(() => {
-		idek = idek + 1
-		if(idek === 1) {
-			instuctions.text = "Get to level 10!"
-			instuctions.scale = 2
-		} else {
-			go("game")
-		}
-	})
-	mouseClick(() => {
-		idek = idek + 1
-		if(idek === 1) {
-			instuctions.text = "Get to level 10!"
-			instuctions.scale = 2
-		} else {
-			go("game")
-		}
-	})
-
-})
-
-
-scene("win", () => {
-	add([
-		rect(8000, 80),
-		color(0, 0, 0, 1),
-		pos(center()),
-		origin("center")
-	])
-	add([
-		text("You Won!\rPress me to play!"),
-		pos(center()),
-		origin("center")
-	])
-
-	keyDown(() => {
-		go('game')
-	})
-
-	mouseDown(() => {
-		go("game")
-	})
-})
-
-scene("menu", () => {
-	add([
-		rect(8000, 80),
-		color(0, 0, 0, 1),
-		pos(center()),
-		origin("center")
-	])
-	add([
-		text('Press me to play!'),
-		pos(center()),
-		origin("center")
-	])
-	mouseDown(() => {
-		go("settings")
-	})
-
-	keyDown(() => {
-		go('settings')
-	})
-})
-
-scene("lose", () => {
-	add([
-		rect(10000, 80),
-		color(0, 0, 0, 1),
-		pos(center()),
-		origin("center")
-	])
-	add([
-		text("You Lose\rPress me to play!"),
-		pos(center()),
-		origin("center")
-	])
-
-	keyDown(() => {
-		go('game')
-	})
-
-	mouseDown(() => {
-		go("game")
-	})
-})
-
 const levels = [
 	[
 		"=============================",
@@ -280,14 +169,20 @@ scene("game", ({
 	healths,
 	potionsss,
 	thing,
+	scores,
 } = {
 	levelId: 0,
 	healths: 30,
 	potionsss: 0,
-	thing: 1
+	thing: 1,
+	scores: 0
 }) => {
 
 	addLevel(levels[levelId ?? 0], levelConf);
+
+	let score = scores;
+
+
 
 	var health = healths
 
@@ -315,6 +210,20 @@ scene("game", ({
 		camPos(player.pos)
 	})
 
+	const timer = add([
+		text(score),
+		origin("center"),
+		pos(1000, 800),
+		fixed(),
+	])	
+
+	action(() => {
+		score++;
+		timer.text = score;
+	})
+
+
+
 	var checker = 1
 	player.collides("invis", (p) => {
 		if (p.is("invis")) {
@@ -339,7 +248,7 @@ scene("game", ({
 		shake()
 		helathlabel.text = health
 		if (health < 0) {
-			go("lose")
+			go("lose", score)
 		}
 	})
 
@@ -359,7 +268,6 @@ scene("game", ({
 		}
 	})
 
-
 	keyPress("space", () => {
 		if (explosion > 0) {
 			const explosions = add([
@@ -370,6 +278,8 @@ scene("game", ({
 				color(255, 255, 255),
 
 			])
+
+			burp()
 
 			explosions.collides("enemy", (w) => {
 				if (w.is("enemy")) {
@@ -391,7 +301,7 @@ scene("game", ({
 			if (health < 0) {
 				if (checker === 2) return;
 				destroy(player)
-				go("lose")
+				go("lose", score)
 			}
 			console.log(explosion)
 		}
@@ -403,21 +313,23 @@ scene("game", ({
 
 	player.collides("chest", () => {
 		if(thing === 10) {
-			go("win")
+			go("win", score)
 		} else {
 			if (levelId + 1 < levels.length) {
 			go("game", {
 				levelId: levelId + 1,
 				healths: 30,
 				potionsss: explosion,
-				thing: thing + 1
+				thing: thing + 1,
+				scores: score
 			})
 		} else {
 			go("game", {
 				levelId: levelsss,
 				healths: 30,
 				potionsss: explosion,
-				thing: thing + 1
+				thing: thing + 1,
+				scores: score
 			})
 		}
 	}
@@ -442,5 +354,130 @@ scene("game", ({
 		player.move(speed, 0)
 	})
 })
+
+scene("settings", () => {
+	add([
+		text("Use wasd to move. Press me again! :>"),
+		pos(center()),
+		origin('center')
+	])
+
+	keyDown(() => {
+		go('settings2')
+	})
+	mouseClick(() => {
+		go('settings2')
+	})
+})
+
+scene("settings2", () => {
+	var idek = 0
+	var instuctions = add([
+		text("Hover over potions and press space to use them. Press me again! :>"),
+		scale(0.5),
+		pos(center()),
+		origin('center')
+	])
+
+	keyDown(() => {
+		idek = idek + 1
+		if(idek === 1) {
+			instuctions.text = "Get to level 10!"
+			instuctions.scale = 2
+		} else {
+			go("game")
+		}
+	})
+
+	mouseClick(() => {
+		idek = idek + 1
+		if(idek === 1) {
+			instuctions.text = "Get to level 10!"
+			instuctions.scale = 2
+		} else {
+			go("game")
+		}
+	})
+
+})
+
+scene("win", (score) => {
+	add([
+		rect(8000, 80),
+		color(0, 0, 0, 1),
+		pos(center()),
+		origin("center")
+	])
+	const idk = add([
+		text("You Won!\rPress me to play!"),
+		pos(center()),
+		origin("center")
+	])
+
+	add([
+		text(score),
+		pos(idk.pos.x - 200, idk.pos.y + 64),
+		scale(2),
+	]);
+
+	keyDown(() => {
+		go('game')
+	})
+
+	mouseDown(() => {
+		go("game")
+	})
+})
+
+scene("menu", () => {
+	add([
+		rect(8000, 80),
+		color(0, 0, 0, 1),
+		pos(center()),
+		origin("center")
+	])
+	add([
+		text('Press me to play!'),
+		pos(center()),
+		origin("center")
+	])
+	mouseDown(() => {
+		go("settings")
+	})
+
+	keyDown(() => {
+		go('settings')
+	})
+})
+
+scene("lose", (score) => {
+	add([
+		rect(10000, 80),
+		color(0, 0, 0, 1),
+		pos(center()),
+		origin("center")
+	])
+
+	const fun =	add([
+		text("You Lose\rPress me to play!"),
+		pos(center()),
+		origin("center")
+	])
+
+	add([
+		text(score),
+		pos(fun.pos.x - 200, fun.pos.y + 64),
+		scale(2),
+	]);
+
+	keyDown(() => {
+		go('game')
+	})
+
+	mouseDown(() => {
+		go("game")
+	})
+})
+
 
 go("menu")
