@@ -633,7 +633,7 @@ scene("game", ({
 
 	action(() => {
 		score++;
-		timer.text = score / 100;
+		timer.text = score / 1000
 	})
 
 
