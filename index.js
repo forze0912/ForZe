@@ -2,7 +2,7 @@ import kaboom from 'kaboom';
 import patrol from "./patrol";
 
 kaboom({
-	clearColor: [255,255,255]
+	clearColor: [0,0,0,1]
 })
 
 loadSprite("bean", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/bean.png")
@@ -633,7 +633,7 @@ scene("game", ({
 
 	action(() => {
 		score++;
-		timer.text = score / 1000
+		timer.text = score / 100
 	})
 
 

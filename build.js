@@ -2163,7 +2163,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // index.js
   kaboom_default({
-    clearColor: [255, 255, 255]
+    clearColor: [0, 0, 0, 1]
   });
   loadSprite("bean", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/bean.png");
   loadSprite("chest", "https://raw.githubusercontent.com/forze0912/kaboom.github.io/master/sprites/chest.png");
@@ -2716,7 +2716,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     ]);
     action(() => {
       score++;
-      timer.text = score / 10;
+      timer.text = score / 100;
     });
     var checker = 1;
     player.collides("invis", (p) => {
