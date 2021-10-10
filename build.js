@@ -2965,5 +2965,5 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       go("camp");
     });
   });
-  go("camp");
+  go("menu");
 })();
