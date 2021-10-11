@@ -467,25 +467,21 @@ scene('camp', ({
 		])	
 		setTimeout(() => {
 			dia.text = "there is a person going after you"
-			dia.pos(player.pos.x - 128, player.pos.y)
 			dia.scale(0.5)
 		}, 2000)
 		setTimeout(() => {
 			dia.text = "you gotta run, i will guide you"
-			dia.pos(player.pos.x - 128, player.pos.y)
 			dia.scale(0.5)
 		}, 4000)
 
 
 		setTimeout(() => {
 			dia.text = "When you see potions, Press Space to use potion! this can explode enemies"
-			dia.pos(player.pos.x - 200, player.pos.y)
 			dia.scale(0.2)
 		}, 4000 + 2000)
 			
 		setTimeout(() => {
 			dia.text = "go to the chest!"
-			dia.pos(player.pos.x - 128, player.pos.y)
 			dia.scale(0.5)
 		}, 8000 + 2000)
 
@@ -614,7 +610,6 @@ keyPress("space", () => {
 		
 		}
 	})
-
 
 	explosion.collides("enemy", (h) => {
 		checker2 = checker2 + 1
