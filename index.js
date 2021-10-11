@@ -1,4 +1,5 @@
 import kaboom from 'kaboom';
+import { useCallback } from 'react';
 import patrol from "./patrol";
 import patrol2 from "./patrol2"
 kaboom({
@@ -299,7 +300,7 @@ const c = [
 	"=       !     !             =",
 	"=       !     !             =",
 	"=                           =",
-	"=                           =",
+	"=            3              =",
 	"=                           =",
 	"=                           =",
 	"=                           =",
@@ -340,6 +341,17 @@ const l = {
 		color(0,0,0,1),
 		solid(),
 		"deposit"
+	],
+
+	"3": () => [
+		sprite("friend"),
+		area(),
+		solid(),
+		pos(center()),
+		origin("center"),
+		patrol2(),
+		scale(1),
+		"betray"
 	],
 
 	"q": () => [
@@ -552,21 +564,13 @@ scene('camp', ({
 		setTimeout(() => {
 			destroy(hehe)
 			shake()
-			const betray2 = add([
-				sprite("friend"),
-				area(),
-				solid(),
-				pos(center()),
-				origin("center"),
-				patrol2(),
-				"betray"
-			])
 			destroy(betray)
 			add([
 				text("Deposit 69 potions in here!"),
 				pos(384, 832),
 				scale(0.5),
 				origin('center'),
+				
 				area()
 			])
 		}, 12000 * 2)
@@ -576,9 +580,11 @@ scene('camp', ({
 
 		})
 	
+
 var timout = 0
 
 var wasd = 100
+
 
 keyPress("space", () => {
 	if(e === 0){
@@ -594,14 +600,18 @@ keyPress("space", () => {
 	if(levelID === 2) {
 		console.log('hi')
 	}
-	
+
+
 	explosion.collides("betray", (b) => {
-		if(tracker >= 69) {
+		if(b.is("betray")) {
+			if(tracker >= 69) {
 			wasd = wasd - 3
 				if(wasd <= 0) {
-				destroy(betray2)
-				go("win", score = "No creds for now")					
+				destroy(b)
+				go("win", score = "No creds for now", score.scale = 0.5)					
 				}
+		}
+		
 		}
 	})
 
@@ -651,7 +661,7 @@ keyPress("space", () => {
 				add([
 					text('Go get em!'),
 					area(),
-					pos(betray2.pos)
+					pos(center())
 				])
 					console.log('yes')
 			}
@@ -660,7 +670,6 @@ keyPress("space", () => {
 			}, 2000)
 		}
 	})
-
 
 
 
