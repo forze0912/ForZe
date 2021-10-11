@@ -2161,6 +2161,29 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     };
   }
 
+  // patrol2.js
+  function patrol2(speed = 100 * 4, dir2 = 1, wasd = 60) {
+    return {
+      id: "patrol",
+      require: ["pos", "area"],
+      add() {
+        this.on("collide", (obj, side) => {
+          if (side === "left" || side === "right") {
+            speed = -speed;
+          }
+        });
+        this.on("collide", (obj, side) => {
+          if (side === "up" || side === "down") {
+            speed = -speed;
+          }
+        });
+      },
+      update() {
+        this.move(dir(1).scale(speed));
+      }
+    };
+  }
+
   // index.js
   kaboom_default({
     clearColor: [0, 0, 0, 1]
@@ -2333,27 +2356,6 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "=                           =",
       "=                           =",
       "=                           =",
-      "=             q             =",
-      "=                           =",
-      "============================="
-    ],
-    [
-      "=============================",
-      "=                           =",
-      "=             &             =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
-      "=                           =",
       "=             #             =",
       "=                           =",
       "============================="
@@ -2439,6 +2441,48 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "=    *   *      *  #  *     =",
       "=         !  !              =",
       "============================="
+    ],
+    [
+      "=============================",
+      "=     !     *         *     =",
+      "=      *                    =",
+      "=                           =",
+      "=                        !  =",
+      "=    !      *   !   *       =",
+      "=                           =",
+      "=    *         !            =",
+      "=                     =     =",
+      "=      *   @          =======",
+      "=                       *   =",
+      "=           *    ============",
+      "=     !                     =",
+      "======                *     =",
+      "= ***  ===========          =",
+      "= ***                       =",
+      "= *#*    ! *      *    *    =",
+      "=      = *      *    *      =",
+      "============================="
+    ],
+    [
+      "=============================",
+      "=                           =",
+      "=       !     !             =",
+      "=       !     !             =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=                           =",
+      "=     0                     =",
+      "=                           =",
+      "=                           =",
+      "=             q             =",
+      "=                           =",
+      "============================="
     ]
   ];
   var l = {
@@ -2456,6 +2500,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       area(),
       scale(0.5),
       "chest"
+    ],
+    "0": () => [
+      rect(64, 64),
+      area(),
+      color(0, 0, 0, 1),
+      solid(),
+      "deposit"
     ],
     "q": () => [
       sprite("chest"),
@@ -2495,7 +2546,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       area()
     ],
     "2": () => [
-      text("I found a safe spot, just gp through all of these levels!"),
+      text("I found a safe spot, just go through all of these levels!"),
       scale(0.5)
     ]
   };
@@ -2510,6 +2561,22 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     health: 30,
     helper: 0
   }) => {
+    var position = Math.floor(Math.random * 200) + 800;
+    function spawnPotion() {
+      add([
+        sprite("potion"),
+        area(),
+        solid(),
+        pos(center()),
+        origin("center"),
+        scale(0.1),
+        "potion"
+      ]);
+      wait(rand(0.5, 1.5), () => {
+        spawnPotion();
+      });
+    }
+    var tracker = 0;
     addLevel(c[levelID ?? 0], l);
     var potion = potions;
     const player = add([
@@ -2573,6 +2640,66 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
     var checker2 = helper;
+    var wtf = 1;
+    player.collides("dummy", (h) => {
+      player.pos.x = player.pos.x - 64;
+      const barrier = add([
+        rect(64, 64),
+        area(),
+        pos(0, 832),
+        color(0, 0, 0, 1),
+        scale(29, 1),
+        solid()
+      ]);
+      const betray = add([
+        sprite("friend"),
+        solid(),
+        area(),
+        pos(1215, 996),
+        scale(0.5)
+      ]);
+      const hehe = add([
+        text("You know that I was the one hunting u down..."),
+        area(),
+        pos(742, betray.pos.y),
+        scale(0.5)
+      ]);
+      setTimeout(() => {
+        hehe.text = "And YOU fell into my trap";
+      }, 3e3);
+      setTimeout(() => {
+        hehe.text = "so goodbye and say hello to my bounty reward!";
+      }, 3e3 * 2);
+      setTimeout(() => {
+        hehe.text = "wait, why arent u dying?";
+        destroy(barrier);
+        shake();
+      }, 6e3 * 2);
+      setTimeout(() => {
+        destroy(hehe);
+        shake();
+        const betray22 = add([
+          sprite("friend"),
+          area(),
+          solid(),
+          pos(center()),
+          origin("center"),
+          patrol2(),
+          "betray"
+        ]);
+        destroy(betray);
+        add([
+          text("Deposit 69 potions in here!"),
+          pos(384, 832),
+          scale(0.5),
+          origin("center"),
+          area()
+        ]);
+      }, 12e3 * 2);
+      spawnPotion();
+    });
+    var timout = 0;
+    var wasd = 100;
     keyPress("space", () => {
       if (e === 0) {
         return;
@@ -2586,6 +2713,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         if (levelID === 2) {
           console.log("hi");
         }
+        explosion.collides("betray", (b) => {
+          if (tracker >= 69) {
+            wasd = wasd - 3;
+            if (wasd <= 0) {
+              destroy(betray2);
+              go("win", score = "No creds for now");
+            }
+          }
+        });
         explosion.collides("enemy", (h) => {
           checker2 = checker2 + 1;
           if (checker2 === 1) {
@@ -2608,35 +2744,27 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         }, 2e3);
       }
     });
-    player.collides("dummy", () => {
-      add([
-        rect(64, 64),
-        area(),
-        pos(0, 832),
-        color(0, 0, 0, 1),
-        scale(29, 1),
-        solid()
-      ]);
-      const betray = add([
-        sprite("friend"),
-        solid(),
-        area(),
-        pos(1215, 996),
-        scale(0.5)
-      ]);
-      const hehe = add([
-        text("You know that I was the one hunting u down..."),
-        pos(742, betray.pos.y),
-        scale(0.5)
-      ]);
-      setTimeout(() => {
-        hehe.text = "And YOU fell into my trap";
-      }, 3e3);
-      setTimeout(() => {
-        hehe.text = "so goodbye and say hello to my bounty reward!";
-        destroy(player);
-        shake();
-      }, 3e3 * 2);
+    player.collides("deposit", () => {
+      if (e < 1) {
+        return;
+      } else {
+        e = e - 1;
+        potionss.text = e;
+        timout = timout + 1;
+        tracker = tracker + 1;
+        console.log(tracker);
+        if (tracker === 69) {
+          add([
+            text("Go get em!"),
+            area(),
+            pos(betray2.pos)
+          ]);
+          console.log("yes");
+        }
+        setTimeout(() => {
+          timout = 0;
+        }, 2e3);
+      }
     });
     keyDown("w", () => {
       player.move(dir(90).scale(-speed));
@@ -2686,7 +2814,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     scores: 0
   }) => {
     addLevel(levels[levelId ?? 0], levelConf);
-    let score = scores;
+    let score2 = scores;
     var health = healths;
     const helathlabel = add([
       text(health),
@@ -2709,14 +2837,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       camPos(player.pos);
     });
     const timer = add([
-      text(score),
+      text(score2),
       origin("center"),
       pos(1e3, 800),
       fixed()
     ]);
     action(() => {
-      score++;
-      timer.text = score / 100;
+      score2++;
+      timer.text = score2 / 100;
     });
     var checker = 1;
     player.collides("invis", (p) => {
@@ -2742,7 +2870,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       shake();
       helathlabel.text = health;
       if (health < 0) {
-        go("lose", score);
+        go("lose", score2);
       }
     });
     var explosion = potionsss;
@@ -2788,7 +2916,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           if (checker === 2)
             return;
           destroy(player);
-          go("lose", score);
+          go("lose", score2);
         }
         console.log(explosion);
       }
@@ -2796,7 +2924,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     var levelsss = Math.floor(Math.random() * 2) + 1;
     player.collides("chest", () => {
       if (thing === 10) {
-        go("win", score);
+        go("win", score2);
       } else {
         if (levelId + 1 < levels.length) {
           go("game", {
@@ -2804,7 +2932,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             healths: 30,
             potionsss: explosion,
             thing: thing + 1,
-            scores: score
+            scores: score2
           });
         } else {
           go("game", {
@@ -2812,7 +2940,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
             healths: 30,
             potionsss: explosion,
             thing: thing + 1,
-            scores: score
+            scores: score2
           });
         }
       }
@@ -2879,7 +3007,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     });
   });
-  scene("win", (score) => {
+  scene("win", (score2) => {
     add([
       rect(8e3, 80),
       color(0, 0, 0, 1),
@@ -2892,7 +3020,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center")
     ]);
     add([
-      text(score),
+      text(score2),
       pos(idk.pos.x - 200, idk.pos.y + 64),
       scale(2)
     ]);
@@ -2922,7 +3050,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       go("settings");
     });
   });
-  scene("lose", (score) => {
+  scene("lose", (score2) => {
     add([
       rect(1e4, 80),
       color(0, 0, 0, 1),
@@ -2935,7 +3063,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center")
     ]);
     add([
-      text(score),
+      text(score2),
       pos(fun.pos.x - 200, fun.pos.y + 64),
       scale(2)
     ]);
@@ -2945,6 +3073,39 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     mouseDown(() => {
       go("game");
     });
+  });
+  scene("campaign", () => {
+    var instuctions = add([
+      text("Touch things to interact with them, Press me!"),
+      scale(0.7),
+      pos(center()),
+      origin("center")
+    ]);
+    mouseDown(() => {
+      go("camp");
+    });
+  });
+  scene("options", () => {
+    const campaign = add([
+      text("Campaign, Press number 1!"),
+      area(),
+      scale(0.7),
+      origin("left"),
+      pos(50, 450)
+    ]);
+    keyDown("1", () => {
+      go("campaign");
+    });
+    keyDown("2", () => {
+      go("menu");
+    });
+    const Level = add([
+      text("Level, Press number 2!"),
+      area(),
+      scale(0.7),
+      origin("right"),
+      pos(1750, 450)
+    ]);
   });
   scene("lose2", () => {
     add([
@@ -2965,5 +3126,5 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       go("camp");
     });
   });
-  go("menu");
+  go("options");
 })();

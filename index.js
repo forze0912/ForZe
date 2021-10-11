@@ -1,6 +1,6 @@
 import kaboom from 'kaboom';
 import patrol from "./patrol";
-
+import patrol2 from "./patrol2"
 kaboom({
 	clearColor: [0,0,0,1]
 })
@@ -166,28 +166,6 @@ const levelConf = {
 };
 
 const c = [
-
-	[
-		"=============================",
-		"=                           =",
-		"=             &             =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=                           =",
-		"=             q             =",
-		"=                           =",
-		"=============================",
-],
 		[
 			"=============================",
 			"=                           =",
@@ -293,6 +271,49 @@ const c = [
 		"=============================",
 	],
 
+
+[
+	"=============================",
+	"=     !     *         *     =",
+	"=      *                    =",
+	"=                           =",
+	"=                        !  =",
+	"=    !      *   !   *       =",
+	"=                           =",
+	"=    *         !            =",
+	"=                     =     =",
+	"=      *   @          =======",
+	"=                       *   =",
+	"=           *    ============",
+	"=     !                     =",
+	"======                *     =",
+	"= ***  ===========          =",
+	"= ***                       =",
+	"= *#*    ! *      *    *    =",
+	"=      = *      *    *      =",
+	"=============================",
+],
+[
+	"=============================",
+	"=                           =",
+	"=       !     !             =",
+	"=       !     !             =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=                           =",
+	"=     0                     =",
+	"=                           =",
+	"=                           =",
+	"=             q             =",
+	"=                           =",
+	"=============================",
+],
 ]
 
 const l = {
@@ -312,6 +333,13 @@ const l = {
 		area(),
 		scale(0.5),
 		"chest"
+	],
+	"0": () => [
+		rect(64, 64),
+		area(),
+		color(0,0,0,1),
+		solid(),
+		"deposit"
 	],
 
 	"q": () => [
@@ -356,7 +384,7 @@ const l = {
 		area(),
 	],
 	"2": () => [
-		text("I found a safe spot, just gp through all of these levels!"),
+		text("I found a safe spot, just go through all of these levels!"),
 		scale(0.5)
 	]
 }
@@ -372,6 +400,25 @@ scene('camp', ({
 	health: 30,
 	helper: 0
 }) => {	
+
+	var position = Math.floor(Math.random * 200) + 800
+
+	function spawnPotion() {
+		add([
+			sprite("potion"),
+			area(),
+			solid(),
+			pos(center()),
+			origin('center'),
+			scale(0.1),
+			"potion"
+		]);
+		wait(rand(0.5, 1.5), () => {
+			spawnPotion();
+		});
+	}
+	
+	var tracker = 0
 
 	addLevel(c[levelID ?? 0], l)
 
@@ -456,54 +503,14 @@ scene('camp', ({
 
 	var checker2 = helper
 
-	keyPress("space", () => {
-		if(e === 0){
-			return
-		} else {
-			const explosion = add([
-			rect(500, 500),
-			area(),
-			pos(player.pos),
-			origin('center')
-		])
 
-		if(levelID === 2) {
-			console.log('hi')
-		}
+	var wtf = 1
 
+	player.collides("dummy", (h) => {
 
-		explosion.collides("enemy", (h) => {
-			checker2 = checker2 + 1
-			if(checker2 === 1) {
-				destroy(h)
-				add([
-					text('good job!'),
-					pos(player.pos),
-					origin('center')
-				])
-			} else {
-			destroy(h)				
-			}
+		player.pos.x = player.pos.x - 64
 
-		})
-
-		shake()
-
-		e = e - 1
-
-		potionss.text = e
-
-		burp()
-
-		setTimeout(() => {
-			destroy(explosion)
-		}, 2000)
-		}
-		
-	})
-
-	player.collides("dummy", () => {
-		add([
+		const barrier = add([
 			rect(64, 64),
 			area(),
 			pos(0, 832),
@@ -522,6 +529,7 @@ scene('camp', ({
 
 		const hehe = add([
 			text("You know that I was the one hunting u down..."),
+			area(),
 			pos(742,betray.pos.y),
 			scale(0.5),
 		])		
@@ -532,11 +540,128 @@ scene('camp', ({
 
 		setTimeout(() => {
 			hehe.text = "so goodbye and say hello to my bounty reward!"
-			destroy(player)
-			shake()
 		}, 3000 * 2)
 
+		setTimeout(() => {
+			hehe.text = "wait, why arent u dying?"
+			destroy(barrier)
+			shake()
+		}, 6000 * 2 )
+
+
+		setTimeout(() => {
+			destroy(hehe)
+			shake()
+			const betray2 = add([
+				sprite("friend"),
+				area(),
+				solid(),
+				pos(center()),
+				origin("center"),
+				patrol2(),
+				"betray"
+			])
+			destroy(betray)
+			add([
+				text("Deposit 69 potions in here!"),
+				pos(384, 832),
+				scale(0.5),
+				origin('center'),
+				area()
+			])
+		}, 12000 * 2)
+
+		spawnPotion()
+
+
+		})
+	
+var timout = 0
+
+var wasd = 100
+
+keyPress("space", () => {
+	if(e === 0){
+		return
+	} else {
+		const explosion = add([
+		rect(500, 500),
+		area(),
+		pos(player.pos),
+		origin('center')
+	])
+
+	if(levelID === 2) {
+		console.log('hi')
+	}
+	
+	explosion.collides("betray", (b) => {
+		if(tracker >= 69) {
+			wasd = wasd - 3
+				if(wasd <= 0) {
+				destroy(betray2)
+				go("win", score = "No creds for now")					
+				}
+		}
 	})
+
+
+	explosion.collides("enemy", (h) => {
+		checker2 = checker2 + 1
+		if(checker2 === 1) {
+			destroy(h)
+			add([
+				text('good job!'),
+				pos(player.pos),
+				origin('center')
+			])
+		} else {
+		destroy(h)				
+		}
+
+	})
+
+	shake()
+
+	e = e - 1
+
+	potionss.text = e
+
+	burp()
+
+	setTimeout(() => {
+		destroy(explosion)
+	}, 2000)
+	}
+	
+})
+
+	player.collides("deposit", () => {
+		if(e < 1) {
+			return
+		} else {
+			e = e - 1
+			potionss.text = e
+			timout = timout + 1
+			tracker = tracker + 1
+
+			console.log(tracker)
+			if(tracker === 69) {
+			
+				add([
+					text('Go get em!'),
+					area(),
+					pos(betray2.pos)
+				])
+					console.log('yes')
+			}
+			setTimeout(() => {
+				timout = 0
+			}, 2000)
+		}
+	})
+
+
 
 
 	keyDown("w" || "up", () => {
@@ -902,6 +1027,46 @@ scene("lose", (score) => {
 	})
 })
 
+scene('campaign', () => {
+	var instuctions = add([
+		text("Touch things to interact with them, Press me!"),
+		scale(0.7),
+		pos(center()),
+		origin('center')
+	])
+
+	mouseDown(() => {
+		go("camp")
+	})
+})
+
+scene('options', () => {
+	const campaign = add([
+		text("Campaign, Press number 1!"),
+		area(),
+		scale(0.7),
+		origin("left"),
+		pos(50, 450)
+	])
+
+	keyDown("1", () => {
+		go("campaign")
+	})
+
+	keyDown("2", () => {
+		go("menu")
+	})
+
+	const Level = add([
+		text("Level, Press number 2!"),
+		area(),
+		scale(0.7),
+		origin("right"),
+		pos(1750, 450)
+	])
+
+})
+
 scene("lose2", () => {
 	add([
 		rect(10000, 80),
@@ -926,4 +1091,4 @@ scene("lose2", () => {
 })
 
 
-go("menu")
+go("options")
