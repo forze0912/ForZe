@@ -4674,7 +4674,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center")
     ]);
     add([
-      text(score2),
+      text(score2 / 100),
       pos(idk.pos.x - 200, idk.pos.y + 64),
       scale(2)
     ]);
@@ -4717,7 +4717,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       origin("center")
     ]);
     add([
-      text(score2),
+      text(score2 / 100),
       pos(fun.pos.x - 200, fun.pos.y + 64),
       scale(2)
     ]);
