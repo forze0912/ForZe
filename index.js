@@ -967,7 +967,7 @@ scene("win", (score) => {
 	])
 
 	add([
-		text(score),
+		text(score / 100),
 		pos(idk.pos.x - 200, idk.pos.y + 64),
 		scale(2),
 	]);
@@ -1017,7 +1017,7 @@ scene("lose", (score) => {
 	])
 
 	add([
-		text(score),
+		text(score / 100),
 		pos(fun.pos.x - 200, fun.pos.y + 64),
 		scale(2),
 	]);
