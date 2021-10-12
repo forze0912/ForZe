@@ -4270,19 +4270,15 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       ]);
       setTimeout(() => {
         dia.text = "there is a person going after you";
-        dia.scale(0.5);
       }, 2e3);
       setTimeout(() => {
         dia.text = "you gotta run, i will guide you";
-        dia.scale(0.5);
       }, 4e3);
       setTimeout(() => {
         dia.text = "When you see potions, Press Space to use potion! this can explode enemies";
-        dia.scale(0.2);
       }, 4e3 + 2e3);
       setTimeout(() => {
         dia.text = "go to the chest!";
-        dia.scale(0.5);
       }, 8e3 + 2e3);
       setTimeout(() => {
         destroy(dia);
