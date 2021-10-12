@@ -467,22 +467,18 @@ scene('camp', ({
 		])	
 		setTimeout(() => {
 			dia.text = "there is a person going after you"
-			dia.scale(0.5)
 		}, 2000)
 		setTimeout(() => {
 			dia.text = "you gotta run, i will guide you"
-			dia.scale(0.5)
 		}, 4000)
 
 
 		setTimeout(() => {
 			dia.text = "When you see potions, Press Space to use potion! this can explode enemies"
-			dia.scale(0.2)
 		}, 4000 + 2000)
 			
 		setTimeout(() => {
 			dia.text = "go to the chest!"
-			dia.scale(0.5)
 		}, 8000 + 2000)
 
 			
