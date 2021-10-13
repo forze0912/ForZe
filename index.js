@@ -1,5 +1,5 @@
 import kaboom from 'kaboom';
-import { useCallback } from 'react';
+
 import patrol from "./patrol";
 import patrol2 from "./patrol2"
 kaboom({
@@ -962,8 +962,10 @@ scene("win", (score) => {
 		origin("center")
 	])
 
+	var wasd = score / 100
+
 	add([
-		text(score / 100),
+		text(wasd),
 		pos(idk.pos.x - 200, idk.pos.y + 64),
 		scale(2),
 	]);
